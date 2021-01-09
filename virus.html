@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zn-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>病毒感染模拟</title>
+  <style>
+    body {
+      text-align: center;
+    }
+
+    #menu input {
+      width: 240px;
+    }
+  </style>
+</head>
+
+<body bgcolor="#aaa">
+  <div>
+    <span style="color:green">绿色为普通人群</span>&nbsp;<span style="color:red">红色为感染人群</span>
+  </div>
+  <div>
+    <canvas id="canvas" width="500" height="500"></canvas>
+  </div>
+  <div id="menu">
+    <div>选项</div>
+    <div>演化总人数:<label for="">&nbsp;最小<input id="r1" type="range" max=1500 min=1 value=500>最大</label></div>
+    <div>人员流动性:<label for="">&nbsp;最小<input id="r2" type="range" max=20 min=1 value=10>最大</label></div>
+    <div>病毒感染性:<label for="">&nbsp;最小<input id="r3" type="range" max=20 min=1 value=10>最大</label></div>
+    <div>限制人员出行:<label for="">&nbsp;是<input id="r4" type="range" max=1 min=0 value=1>否 &nbsp;&nbsp;</label></div>
+    <div><span
+        style="display: inline-block; width: 100px; height: 30px; border: 1px solid #ccc; border-radius: 6px; background-color: aliceblue; line-height: 30px; font-size: 16px; cursor: pointer;"
+        onclick="restart()">重新演化</span></div>
+    <script>
+      var PEOPLE = 500 // 人数
+      var LDX = 1 // 人员流动性
+      var GRX = 1 // 病毒感染范围
+      var XZCX = 1 // 限制出行
+      var ctx = document.getElementById("canvas").getContext("2d")
+      // 随机整数函数
+      function randInt(a, b) {
+        return parseInt(Math.random() * (b - a + 1) + a)
+      }
+
+      // 人员感染
+      function check(a, b) {
+        if (a.x - GRX * 6 <= b.x && a.x + GRX * 8 >= b.x &&
+          a.y - GRX * 6 <= b.y && a.y + GRX * 8 >= b.y) {
+          if (a.state == 2) {
+            b.state = 2
+            b.color = "#ff0000"
+          }
+        }
+
+      }
+
+      // 构造函数
+      function Dot() {
+        this.x = randInt(50, 450)
+        this.y = randInt(50, 450)
+        this.state = 0
+        this.color = "#00cc00"
+        this.paint = function () {
+          ctx.fillStyle = this.color
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, 5, 0, Math.PI * 2, true);
+          ctx.closePath();
+          ctx.fill();
+        }
+        this.move = function () {
+          switch (randInt(0, 4)) {
+            case 0:
+              this.y += 3 * LDX * XZCX
+              break
+            case 1:
+              this.y -= 3 * LDX * XZCX
+              break
+            case 2:
+              this.x -= 3 * LDX * XZCX
+              break
+            case 3:
+              this.x += 3 * LDX * XZCX
+              break
+          }
+        }
+      }
+
+      // 创建点
+      var ds = []
+      for (let i = 0; i <= PEOPLE; i++) {
+        ds.push(new Dot())
+      }
+      // 第一个感染者
+      ds[0].state = 2
+      ds[0].color = "#ff0000"
+      ds[0].x = 249
+      ds[0].y = 249
+
+
+      setInterval(function () {
+        // 重置canvas
+        ctx.fillStyle = '#ffffff'
+        ctx.fillRect(0, 0, 500, 500)
+        for (let i = 0; i < PEOPLE; i++) {
+          ds[i].paint()
+          ds[i].move()
+          for (let j = 0; j < PEOPLE; j++) {
+            check(ds[i], ds[j])
+          }
+        }
+      }, 100)
+
+      function restart() {
+        PEOPLE = document.getElementById("r1").value
+        LDX = document.getElementById("r2").value * 0.1
+        GRX = document.getElementById("r3").value * 0.1
+        XZCX = document.getElementById("r4").value
+
+        // 构造函数
+        function Dot() {
+          this.x = randInt(50, 450)
+          this.y = randInt(50, 450)
+          this.state = 0
+          this.color = "#00cc00"
+          this.paint = function () {
+            ctx.fillStyle = this.color
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, 5, 0, Math.PI * 2, true);
+            ctx.closePath();
+            ctx.fill();
+          }
+          this.move = function () {
+            switch (randInt(0, 4)) {
+              case 0:
+                this.y += 3 * LDX * XZCX
+                break
+              case 1:
+                this.y -= 3 * LDX * XZCX
+                break
+              case 2:
+                this.x -= 3 * LDX * XZCX
+                break
+              case 3:
+                this.x += 3 * LDX * XZCX
+                break
+            }
+          }
+        }
+
+        // 创建点
+        ds = []
+        for (let i = 0; i <= PEOPLE; i++) {
+          ds.push(new Dot())
+        }
+        // 第一个感染者
+        ds[0].state = 2
+        ds[0].color = "#ff0000"
+        ds[0].x = 249
+        ds[0].y = 249
+      }
+
+
+    </script>
+</body>
+
+</html>
