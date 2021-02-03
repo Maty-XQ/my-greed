@@ -7,7 +7,7 @@ my bilibili UserName:LTCC爽
 
 my QQ number : 1940198572
 
-you can email me @tqx666888@163.com
+you can email me at:   @tqx666888@163.com
 
 
 我的luogu账号：   XQ是株蒟蒻呀
